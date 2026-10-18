@@ -2,7 +2,7 @@ name: Deploy INIT to Coolify
 
 on:
   push:
-    branches: [codex/startpage]
+    branches: [codex/startpage, cursor/coolify-server-select-f065]
   workflow_dispatch:
 
 permissions:
