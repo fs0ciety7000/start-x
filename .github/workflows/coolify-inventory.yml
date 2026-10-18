@@ -2,6 +2,8 @@ name: Coolify inventory
 
 on:
   workflow_dispatch:
+  push:
+    branches: [cursor/coolify-server-select-f065]
 
 permissions:
   contents: read
