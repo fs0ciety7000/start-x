@@ -1,3 +1,5 @@
+import { lookup } from "node:dns/promises";
+
 const apiBase = (process.env.COOLIFY_API_BASE_URL ?? "https://coolify.fs0ciety.org/api/v1").replace(/\/$/, "");
 const apiKey = process.env.COOLIFY_API_KEY;
 const serverUuid = process.env.COOLIFY_SERVER_UUID?.trim();
@@ -30,8 +32,10 @@ function asArray(value) {
 
 const servers = asArray(await api("GET", "/servers"));
 const usable = servers.filter((server) => server.settings?.is_usable !== false && server.settings?.is_reachable !== false && server.settings?.server_role !== "build");
-const server = serverUuid ? usable.find((item) => item.uuid === serverUuid) : usable.length === 1 ? usable[0] : null;
-if (!server) throw new Error(serverUuid ? "COOLIFY_SERVER_UUID does not identify a usable Coolify server." : `Expected one usable Coolify server, found ${usable.length}. Set the repository variable COOLIFY_SERVER_UUID to choose one.`);
+const coolifyOriginIp = (await lookup("fs0ciety.org", { family: 4 })).address;
+const originServers = usable.filter((item) => item.ip === coolifyOriginIp);
+const server = serverUuid ? usable.find((item) => item.uuid === serverUuid) : originServers.length === 1 ? originServers[0] : null;
+if (!server) throw new Error(serverUuid ? "COOLIFY_SERVER_UUID does not identify a usable Coolify server." : `Expected one usable server matching the existing fs0ciety.org origin, found ${originServers.length}. Set the repository variable COOLIFY_SERVER_UUID to choose one.`);
 
 const projects = asArray(await api("GET", "/projects"));
 let project = projects.find((item) => item.name === projectName);
