@@ -31,11 +31,11 @@ function asArray(value) {
 }
 
 const servers = asArray(await api("GET", "/servers"));
-const usable = servers.filter((server) => server.settings?.is_usable !== false && server.settings?.is_reachable !== false && server.settings?.server_role !== "build");
+const usable = servers.filter((server) => server.settings?.is_usable !== false && server.settings?.is_reachable !== false && server.settings?.server_role !== "build" && server.settings?.is_build_server !== true);
 const coolifyOriginIp = (await lookup("fs0ciety.org", { family: 4 })).address;
 const originServers = usable.filter((item) => item.ip === coolifyOriginIp);
-const server = serverUuid ? usable.find((item) => item.uuid === serverUuid) : originServers.length === 1 ? originServers[0] : null;
-if (!server) throw new Error(serverUuid ? "COOLIFY_SERVER_UUID does not identify a usable Coolify server." : `Expected one usable server matching the existing fs0ciety.org origin, found ${originServers.length}. Set the repository variable COOLIFY_SERVER_UUID to choose one.`);
+const server = serverUuid ? usable.find((item) => item.uuid === serverUuid) : originServers.length === 1 ? originServers[0] : usable.length === 1 ? usable[0] : null;
+if (!server) throw new Error(serverUuid ? "COOLIFY_SERVER_UUID does not identify a usable deployment server." : `Could not identify one deployment server (usable deployment servers: ${usable.length}, matching the existing fs0ciety.org origin: ${originServers.length}). Set the repository variable COOLIFY_SERVER_UUID to choose one.`);
 
 const projects = asArray(await api("GET", "/projects"));
 let project = projects.find((item) => item.name === projectName);
