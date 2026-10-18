@@ -2,7 +2,7 @@
 
 ## Déploiement CI
 
-Le workflow `.github/workflows/deploy-coolify.yml` provisionne le projet et la ressource Coolify depuis le dépôt public, branche `codex/startpage`, puis demande un déploiement à chaque push sur cette branche. Il sélectionne automatiquement un serveur Coolify utilisable seulement s’il n’y en a qu’un. S’il y en a plusieurs, définis la variable de dépôt `COOLIFY_SERVER_UUID` avant de relancer le workflow.
+Le workflow `.github/workflows/deploy-coolify.yml` provisionne le projet et la ressource Coolify depuis le dépôt public, branche `codex/startpage`, puis demande un déploiement à chaque push sur cette branche. Il cible le serveur sur lequel Coolify lui-même tourne. S’il y en a plusieurs, définis la variable de dépôt `COOLIFY_SERVER_UUID` avant de relancer le workflow.
 
 Le workflow utilise le secret GitHub `COOLIFY_API_KEY` et l’API de `https://coolify.fs0ciety.org/api/v1`. La ressource est Docker Compose, fichier `docker-compose.yml`; l’application est routée sur `https://init.fs0ciety.org` et la base reste privée au réseau Compose.
 
@@ -16,7 +16,7 @@ Dans Coolify, les valeurs magiques ci-dessous sont générées et conservées pa
 
 Les noms sont prévus par le générateur d’environnements Compose de Coolify. En local, copie `.env.example` et remplace ces trois valeurs par des secrets uniques (`openssl rand -hex 32` convient pour les trois).
 
-Les variables applicatives non secrètes sont définies dans `docker-compose.yml` :
+Le workflow enregistre aussi les variables applicatives non secrètes sur la ressource :
 
 - `BETTER_AUTH_URL=https://init.fs0ciety.org`
 - `POSTGRES_DB=init`, `POSTGRES_USER=init`
@@ -30,7 +30,7 @@ Conserver le volume `init_postgres` lors des redéploiements. Les sauvegardes r�
 
 ## DNS Cloudflare
 
-Le workflow crée le CNAME proxifié `init.fs0ciety.org` vers le domaine racine, dont l’IP DNS existante dessert déjà Coolify. Coolify attache le domaine au service `app` et gère le certificat HTTPS.
+Le CNAME proxifié `init` pointe vers le domaine racine, qui dessert déjà Coolify. Le workflow ne modifie pas ce DNS. Coolify attache `https://init.fs0ciety.org` au service `app`, route le trafic vers le port conteneur `3000` et gère le certificat HTTPS.
 
 ## Santé
 
