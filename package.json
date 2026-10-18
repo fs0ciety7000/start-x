@@ -1,0 +1,36 @@
+{
+  "name": "init-startpage",
+  "version": "0.1.0",
+  "private": true,
+  "engines": { "node": ">=22.13" },
+  "scripts": {
+    "dev": "next dev --hostname 0.0.0.0",
+    "build": "next build",
+    "start": "next start --hostname 0.0.0.0",
+    "db:migrate": "node scripts/migrate.mjs",
+    "db:seed": "node scripts/seed.mjs"
+  },
+  "dependencies": {
+    "@fontsource/barlow-condensed": "^5.2.6",
+    "@fontsource/dm-sans": "^5.2.6",
+    "@fontsource/ibm-plex-mono": "^5.2.6",
+    "@phosphor-icons/react": "^2.1.10",
+    "better-auth": "^1.7.10",
+    "drizzle-orm": "^0.45.4",
+    "motion": "^13.3.0",
+    "next": "16.4.0",
+    "pg": "^8.16.3",
+    "server-only": "^0.0.1",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "@types/pg": "^8.15.5",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "drizzle-kit": "^0.31.7",
+    "typescript": "^5.9.3"
+  }
+}

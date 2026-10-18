@@ -1,0 +1,18 @@
+{
+  "surface": "Personal startpage",
+  "mode": "operate",
+  "direction": "Personal shortcuts with restrained industrial brutalist rail wayfinding",
+  "tokens": {
+    "color.canvas.light": "#e9e7df",
+    "color.canvas.dark": "#171918",
+    "color.surface.light": "#f5f3ec",
+    "color.surface.dark": "#202321",
+    "color.ink.light": "#171918",
+    "color.ink.dark": "#f1efe8",
+    "color.signal": "#ec5929",
+    "font.display": "Barlow Condensed",
+    "font.body": "DM Sans",
+    "font.data": "IBM Plex Mono"
+  },
+  "approvedReference": ".impeccable/mocks/personal-startpage.png"
+}
