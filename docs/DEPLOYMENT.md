@@ -1,21 +1,26 @@
 # Déploiement Coolify
 
-## Ressource
+## Déploiement CI
 
-Créer une ressource **Docker Compose** depuis le dépôt `fs0ciety7000/start-x`, branche de déploiement, fichier `docker-compose.yml`. Publier le service `app` sur le port `3000` avec le domaine `https://init.fs0ciety.org`. Le service `db` reste interne au réseau Compose.
+Le workflow `.github/workflows/deploy-coolify.yml` provisionne le projet et la ressource Coolify depuis le dépôt public, branche `codex/startpage`, puis demande un déploiement à chaque push sur cette branche. Il sélectionne automatiquement un serveur Coolify utilisable seulement s’il n’y en a qu’un. S’il y en a plusieurs, définis la variable de dépôt `COOLIFY_SERVER_UUID` avant de relancer le workflow.
+
+Le workflow utilise le secret GitHub `COOLIFY_API_KEY` et l’API de `https://coolify.fs0ciety.org/api/v1`. La ressource est Docker Compose, fichier `docker-compose.yml`; l’application est routée sur `https://init.fs0ciety.org` et la base reste privée au réseau Compose.
 
 ## Variables d’environnement
 
-Configurer les variables de `.env.example` dans l’environnement Coolify, avec des valeurs aléatoires uniques :
+Dans Coolify, les valeurs magiques ci-dessous sont générées et conservées par ressource Compose. Le jeton `SERVICE_HEX_64_SETUP` sert une seule fois à créer l’admin : copie sa valeur depuis les variables d’environnement de la ressource avant d’ouvrir `/setup`.
 
-- `POSTGRES_PASSWORD`
-- `BETTER_AUTH_SECRET`
-- `BOOTSTRAP_SETUP_TOKEN`
+- `SERVICE_PASSWORD_64_POSTGRES`
+- `SERVICE_HEX_64_AUTH`
+- `SERVICE_HEX_64_SETUP`
+
+Les noms sont prévus par le générateur d’environnements Compose de Coolify. En local, copie `.env.example` et remplace ces trois valeurs par des secrets uniques (`openssl rand -hex 32` convient pour les trois).
+
+Les variables applicatives non secrètes sont définies dans `docker-compose.yml` :
+
 - `BETTER_AUTH_URL=https://init.fs0ciety.org`
 - `POSTGRES_DB=init`, `POSTGRES_USER=init`
 - `RAIL_API_BASE_URL=https://reseau.fs0ciety.org`
-
-Générer deux secrets distincts (`openssl rand -hex 32`). Ne pas mettre ces valeurs dans le dépôt ni dans les logs.
 
 ## Premier démarrage
 
@@ -25,7 +30,7 @@ Conserver le volume `init_postgres` lors des redéploiements. Les sauvegardes r�
 
 ## DNS Cloudflare
 
-Créer le record DNS `init` pointant vers l’hôte ou le proxy public utilisé par Coolify, puis activer le proxy Cloudflare selon la configuration TLS du serveur. Dans Coolify, attacher le domaine au service `app` et laisser le proxy gérer le certificat HTTPS.
+Le workflow crée le CNAME proxifié `init.fs0ciety.org` vers le domaine racine, dont l’IP DNS existante dessert déjà Coolify. Coolify attache le domaine au service `app` et gère le certificat HTTPS.
 
 ## Santé
 

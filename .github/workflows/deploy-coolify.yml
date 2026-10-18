@@ -1,0 +1,27 @@
+name: Deploy INIT to Coolify
+
+on:
+  push:
+    branches: [codex/startpage]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: init-coolify-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Provision and deploy
+        env:
+          COOLIFY_API_KEY: ${{ secrets.COOLIFY_API_KEY }}
+          COOLIFY_SERVER_UUID: ${{ vars.COOLIFY_SERVER_UUID }}
+        run: node scripts/provision-coolify.mjs
