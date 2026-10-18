@@ -83,7 +83,7 @@ const applicationConfig = {
   git_repository: repositoryUrl,
   git_branch: branch,
   build_pack: "dockercompose",
-  docker_compose_location: "docker-compose.yml",
+  docker_compose_location: "/docker-compose.yml",
   docker_compose_domains: [{ name: "app", domain: appDomain }],
   name: appName,
   description: "Private personal startpage",
